@@ -30,20 +30,3 @@ node_modules/
 
 /.vs
 .github
-
-*.DS_Store
-*.jfm
-*.dbmdl
-*.log
-/packages
-/Cohero.Cloud.ServiceLambdaFunction/lambda.zip
-/Cohero.Cloud.ServiceLambdaFunction/Cohero.Cloud.ServiceLambdaFunction.zip
-/UpgradeLog2.htm
-/UpgradeLog.htm
-
-.devops
-.gitlab-ci.yml
-/.lambdas/reminders-trigger/.vs
-appsettings.Development.json
-/FrontEnd/Admin_Portal/.vs
-*storybook.log
