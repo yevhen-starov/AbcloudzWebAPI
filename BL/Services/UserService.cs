@@ -1,35 +1,44 @@
-﻿using AbcloudzWebAPI.BL.Models;
+﻿using AbcloudzWebAPI.BL.Commands.Users;
+using AbcloudzWebAPI.BL.Models;
 using AbcloudzWebAPI.BL.Models.Clients.Request;
+using AbcloudzWebAPI.BL.Models.Clients.Requests;
+using AbcloudzWebAPI.BL.Queries.Users;
 using AutoMapper;
+using MediatR;
+using System.Linq.Expressions;
 
 namespace AbcloudzWebAPI.BL.Services;
 
 public class UserService : IUserService
 {
+    private readonly IMediator _mediator;
     private readonly IMapper _mapper;
-    private static readonly List<UserModel> Users = new List<UserModel>();
 
-    public UserService(IMapper mapper)
+    public UserService(IMapper mapper, IMediator mediator)
     {
+        _mediator = mediator;
         _mapper = mapper;
     }
 
 
-    public Task<List<UserModel>> GetUsers()
+    public Task<IReadOnlyCollection<UserModel>> GetUsers(GetUsersRequest getUsersRequest)
     {
-        var users = Users;
+        ArgumentNullException.ThrowIfNull(getUsersRequest);
+        var pagination = _mapper.Map<PaginationModel>(getUsersRequest);
+
+        var filter = ExpressionHelper.BuildEquals<UserModel>(getUsersRequest.ColumnName, getUsersRequest.ColumnValue);
+        var userQuery = new GetUsersQuery(pagination, filter);
         
-        return Task.FromResult(users);
+        return _mediator.Send(userQuery);
     }
 
-    public Task<long> CreateUser(UserRequest user)
+    public Task<long> CreateUser(CreateUserRequest user)
     {
-        var maxItems = Users.Count == 0 ? 0  : Users.Max(x => x.Id);
+        ArgumentNullException.ThrowIfNull(user);
 
         var userModel = _mapper.Map<UserModel>(user);
-        userModel.Id = maxItems + 1;
-        Users.Add(userModel);
+        var addUserCommand = new CreateUserCommand(userModel);
 
-        return Task.FromResult(userModel.Id);
+        return _mediator.Send(addUserCommand);
     }
 }

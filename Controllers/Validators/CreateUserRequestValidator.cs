@@ -3,9 +3,9 @@ using FluentValidation;
 
 namespace AbcloudzWebAPI.Controllers.Validators;
 
-public class UserRequestValidator : AbstractValidator<UserRequest>
+public class CreateUserRequestValidator : AbstractValidator<CreateUserRequest>
 {
-    public UserRequestValidator()
+    public CreateUserRequestValidator()
     {
         _ = RuleFor(x => x.Name).NotEmpty();
         _ = RuleFor(x => x.Surname).NotEmpty();

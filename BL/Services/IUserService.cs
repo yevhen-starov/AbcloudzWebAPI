@@ -1,11 +1,12 @@
 ﻿using AbcloudzWebAPI.BL.Models;
 using AbcloudzWebAPI.BL.Models.Clients.Request;
+using AbcloudzWebAPI.BL.Models.Clients.Requests;
 
 namespace AbcloudzWebAPI.BL.Services;
 
 public interface IUserService
 {
-    Task<List<UserModel>> GetUsers();
+    Task<IReadOnlyCollection<UserModel>> GetUsers(GetUsersRequest getUsersRequest);
 
-    Task<long> CreateUser(UserRequest user);
+    Task<long> CreateUser(CreateUserRequest user);
 }

@@ -8,7 +8,7 @@ public class UserModelProfile : Profile
 {
     public UserModelProfile()
     {
-        _ = CreateMap<UserRequest, UserModel>()
+        _ = CreateMap<CreateUserRequest, UserModel>()
             .ForMember(x => x.Id, opt => opt.Ignore());
     }
 }

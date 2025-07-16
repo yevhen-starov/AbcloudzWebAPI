@@ -1,5 +1,6 @@
 using AbcloudzWebAPI.BL.Models;
 using AbcloudzWebAPI.BL.Models.Clients.Request;
+using AbcloudzWebAPI.BL.Models.Clients.Requests;
 using AbcloudzWebAPI.BL.Services;
 using Microsoft.AspNetCore.Mvc;
 
@@ -21,15 +22,15 @@ public class UserController : ControllerBase
     }
 
     [HttpGet("list")]
-    public async Task<IActionResult> GetUsers()
+    public async Task<IActionResult> GetUsers([FromQuery]GetUsersRequest getUsersRequest)
     {
-        var result = await _userService.GetUsers();
+        var result = await _userService.GetUsers(getUsersRequest);
         
         return Ok(result);
     }
 
     [HttpPost]
-    public async Task<IActionResult> CreateUser([FromBody] UserRequest user)
+    public async Task<IActionResult> CreateUser([FromBody] CreateUserRequest user)
     {
         var result = await _userService.CreateUser(user);
 
