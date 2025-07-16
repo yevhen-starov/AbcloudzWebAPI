@@ -24,7 +24,7 @@ public class UserService : IUserService
 
     public Task<long> CreateUser(UserRequest user)
     {
-        var maxItems = Users.Max(x => x.Id);
+        var maxItems = Users.Count == 0 ? 0  : Users.Max(x => x.Id);
 
         var userModel = _mapper.Map<UserModel>(user);
         userModel.Id = maxItems + 1;
