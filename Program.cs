@@ -1,5 +1,6 @@
 
 using AbcloudzWebAPI.Application;
+using AbcloudzWebAPI.Validator;
 using AbcloudzWebAPI.Infrastructure;
 using FluentValidation;
 
@@ -9,7 +10,9 @@ builder.Services
      .AddApplication()
      .AddInfrastructure(builder.Configuration);
 
-//builder.Services.AddFluentValidationAutoValidation();
+// Validators
+builder.Services.AddValidatorsFromAssemblyContaining<UserFilterValidator>();
+builder.Services.AddValidatorsFromAssemblyContaining<UserValidator>();
 
 // Add services to the container.
 
@@ -25,9 +28,7 @@ if (app.Environment.IsDevelopment())
     app.UseSwagger();
     app.UseSwaggerUI();
 }
-
  
-
 app.UseHttpsRedirection();
 
 app.UseAuthorization();
