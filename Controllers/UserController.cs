@@ -23,7 +23,7 @@ public class UserController : ControllerBase
     [HttpPost("Create")]
     public IActionResult Create(UserRequest userRequest)
     {
-        var user = _userService.CreateUser(new User { Name = userRequest.UserName, Email = userRequest.Email, Password = userRequest.Password});
+        var user = _userService.CreateUser(new User { Id = Guid.NewGuid(),  Name = userRequest.UserName, Email = userRequest.Email, Password = userRequest.Password});
 
         if (user is null)
             throw new Exception("User not Created");
