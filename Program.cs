@@ -1,8 +1,5 @@
-
 using AbcloudzWebAPI.Application;
-using AbcloudzWebAPI.Validator;
 using AbcloudzWebAPI.Infrastructure;
-using FluentValidation;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -10,9 +7,8 @@ builder.Services
      .AddApplication()
      .AddInfrastructure(builder.Configuration);
 
-// Validators
-builder.Services.AddValidatorsFromAssemblyContaining<UserFilterValidator>();
-builder.Services.AddValidatorsFromAssemblyContaining<UserValidator>();
+
+builder.Services.AddProblemDetails();
 
 // Add services to the container.
 
@@ -22,17 +18,21 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
 var app = builder.Build();
-// Configure the HTTP request pipeline.
-if (app.Environment.IsDevelopment())
 {
-    app.UseSwagger();
-    app.UseSwaggerUI();
+    app.UseExceptionHandler();
+
+    // Configure the HTTP request pipeline.
+    if (app.Environment.IsDevelopment())
+    {
+        app.UseSwagger();
+        app.UseSwaggerUI();
+    }
+
+    app.UseHttpsRedirection();
+
+    app.UseAuthorization();
+
+    app.MapControllers();
+
+    app.Run();
 }
- 
-app.UseHttpsRedirection();
-
-app.UseAuthorization();
-
-app.MapControllers();
-
-app.Run();
