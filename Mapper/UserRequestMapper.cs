@@ -6,8 +6,8 @@ namespace AbcloudzWebAPI.Mapper;
 
 public static class UserRequestMapper
 {
-    public static User ToDomain(this UserRequest request)
-        => new User
+    public static UserDomain ToDomain(this UserRequest request)
+        => new UserDomain
         {
             Id = Guid.NewGuid(),
             Name = request.UserName,

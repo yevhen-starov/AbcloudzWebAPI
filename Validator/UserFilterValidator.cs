@@ -3,7 +3,7 @@ using FluentValidation;
 
 namespace AbcloudzWebAPI.Validator;
 
-public class UserFilterValidator : AbstractValidator<UserFilter>
+public class UserFilterValidator : AbstractValidator<UserFilterRequest>
 {
     public UserFilterValidator()
     {

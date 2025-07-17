@@ -4,7 +4,6 @@ using AbcloudzWebAPI.Domain.Models;
 using AbcloudzWebAPI.Mapper;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
-using System.Linq;
 
 namespace AbcloudzWebAPI.Controllers;
 
@@ -23,9 +22,9 @@ public class UserController : ControllerBase
     }
 
     [HttpPost("Create")]
-    public IActionResult Create(UserRequest userRequest)
+    public async Task<IActionResult> Create(UserRequest userRequest)
     {
-        var user = _userService.CreateUser(userRequest.ToDomain());
+        var user = await _userService.CreateUserAsync(userRequest.ToDomain());
 
         if (user is null)
             throw new Exception("User not Created");
@@ -35,14 +34,18 @@ public class UserController : ControllerBase
 
 
     [HttpGet("list")]
-    public PagedResult<UserResponse> Get([FromQuery] UserFilter filter)
+    public async Task<PagedResult<UserResponse>> Get([FromQuery] UserFilterRequest filter)
     {
-        var users = _userService.GetUsers();
+        var users = await _userService.GetUsersAsync(filter.ToApplication());
 
         if (users == null || users.Count == 0)
-            return new PagedResult<UserResponse>() {
+        {
+            return new PagedResult<UserResponse>()
+            {
                 Items = new List<UserResponse>(),
-                TotalCount = 0 };
+                TotalCount = 0
+            };
+        }
 
         return new PagedResult<UserResponse>
         {
