@@ -1,6 +1,7 @@
 using AbcloudzWebAPI.Application.Services;
 using AbcloudzWebAPI.Contracts.User;
 using AbcloudzWebAPI.Domain.Models;
+using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using System.Linq;
 
@@ -13,11 +14,13 @@ public class UserController : ControllerBase
 
     private readonly ILogger<UserController> _logger;
     private readonly IUserService _userService;
+    private readonly ISender _mediator;
 
-    public UserController(ILogger<UserController> logger, IUserService userService)
+    public UserController(ILogger<UserController> logger, IUserService userService, ISender mediator)
     {
         _logger = logger;
         _userService = userService;
+        _mediator = mediator;
     }
 
     [HttpPost("Create")]
@@ -33,15 +36,19 @@ public class UserController : ControllerBase
 
 
     [HttpGet("list")]
-    public IEnumerable<UserResponse> Get()
+    public PagedResult<User> Get([FromQuery] UserFilter filter)
     {
         var users = _userService.GetUsers();
 
         if (users == null || users.Count == 0)
-            return new List<UserResponse>();
+            return new PagedResult<User>() {Items = new List<User>(), TotalCount = 0 };
 
-        var result = users.Select(u=> new UserResponse { UserId= u.Id, UserName = u.Name});
+        var result = users.Select(u=> new UserResponse { UserId = u.Id, UserName = u.Name});
 
-        return result;
+        return new PagedResult<User>
+        {
+            Items = users,
+            TotalCount = users.Count
+        };
     }
 }
