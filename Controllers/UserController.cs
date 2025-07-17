@@ -4,31 +4,26 @@ using AbcloudzWebAPI.Domain.Models;
 using AbcloudzWebAPI.Mapper;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
+using AbcloudzWebAPI.Application.User.Commands;
+using AbcloudzWebAPI.Application.User.Queries;
 
 namespace AbcloudzWebAPI.Controllers;
 
 [ApiController]
 [Route("[controller]")]
-public class UserController : ControllerBase
+public class UserController(ISender mediator) : ControllerBase
 {
-
-    private readonly ILogger<UserController> _logger;
-    private readonly IUserService _userService;
-
-    public UserController(ILogger<UserController> logger, IUserService userService)
-    {
-        _logger = logger;
-        _userService = userService;
-    }
+    private readonly ISender _mediator = mediator;
 
     [HttpPost("Create")]
     public async Task<IActionResult> Create(UserRequest userRequest)
     {
-        var user = await _userService.CreateUserAsync(userRequest.ToDomain());
+        var command = new CreateUserCommand(userRequest.ToDomain());
+        var user = await _mediator.Send(command);
 
         if (user is null)
             throw new Exception("User not Created");
-
+    
         return Ok();
     }
 
@@ -36,7 +31,8 @@ public class UserController : ControllerBase
     [HttpGet("list")]
     public async Task<PagedResult<UserResponse>> Get([FromQuery] UserFilterRequest filter)
     {
-        var users = await _userService.GetUsersAsync(filter.ToApplication());
+        var query = new GetUsersQuery(filter.ToApplication());
+        var users = await _mediator.Send(query);
 
         if (users == null || users.Count == 0)
         {
